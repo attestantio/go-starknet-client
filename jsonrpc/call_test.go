@@ -50,17 +50,41 @@ func TestCall(t *testing.T) {
 		{
 			name: "MultipleReturnElements",
 			opts: &api.CallOpts{
-				Block:              "latest",
+				Block:              "273028",
 				Contract:           strToAddress("0x0590e76a2e65435b7288bf3526cfa5c3ec7748d2f3433a934c931cce62460fc5"),
 				EntryPointSelector: strToFieldElement("0x36735aa694184cd8116c479c296d9431cc04a470e0467c07067e4586f647ece"),
 			},
 			expected: []types.FieldElement{
 				strToFieldElement("0xde0b6b3a7640000"),
 				strToFieldElement("0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
-				strToFieldElement("0x1f777aef22"),
+				strToFieldElement("0x2264e064ae"),
 				strToFieldElement("0x3660fc6334c9485065394f6432933c2f04b4716c67511ba174384c65faebc19"),
 				strToFieldElement("0x52bf6ec001452dbace0ca4c7db1b232b8031b5a0ccb117bb47a05569df435de"),
 				strToFieldElement("0x12c"),
+			},
+		},
+		{
+			name: "CallData",
+			opts: &api.CallOpts{
+				Block:              "272995",
+				Contract:           strToAddress("0x1d3ec552f7875a008783a1a2706c387ef96067469534458dbfb41003ebecb4f"),
+				EntryPointSelector: strToFieldElement("0x1af63b1cdc061704af767c81df4fd9eb5a3d989868ff970dd79d5431a89db44"),
+				Calldata: []types.FieldElement{
+					strToFieldElement("0x714792a41f3651e171c46c93fc53adeb922a414a891cc36d73029d23e99a6ec"),
+				},
+			},
+			expected: []types.FieldElement{
+				strToFieldElement("0x391d69afc1b49f01ad8d2e0e8a03756b694dd056fb6645781eb00f33dbd8caf"),
+				strToFieldElement("0x4a7876e03402cf253efdb3b17c760ee7349c7ec2876059b83ec2c92ca451e16"),
+				strToFieldElement("0x1"),
+				strToFieldElement("0xde0b6b3a7640000"),
+				strToFieldElement("0x2264e064ae"),
+				strToFieldElement("0x2f4d1ee7e060"),
+				strToFieldElement("0x0"),
+				strToFieldElement("0xca4ef197ec48699c2d4c9f9802770fd08743256759f6f0e500c92e2d397cd7"),
+				strToFieldElement("0x4563918244f40000"),
+				strToFieldElement("0x0"),
+				strToFieldElement("0x9c4"),
 			},
 		},
 	}
@@ -86,7 +110,7 @@ func TestCall(t *testing.T) {
 			default:
 				require.NoError(t, err)
 				require.NotNil(t, response)
-				require.NotNil(t, test.expected, response.Data)
+				require.Equal(t, test.expected, response.Data)
 			}
 		})
 	}

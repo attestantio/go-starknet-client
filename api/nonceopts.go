@@ -20,8 +20,7 @@ type NonceOpts struct {
 	Common CommonOpts
 
 	// Block is the block for which the data is obtained.
-	// It can be a block number, block hash, or one of the special values "latest" or "pending".
-	Block string
+	Block types.BlockID
 
 	// Contact is the contract for which the data is obtained.
 	Contract types.Address

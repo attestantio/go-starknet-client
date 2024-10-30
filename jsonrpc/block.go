@@ -40,8 +40,12 @@ func (s *Service) Block(ctx context.Context,
 		return nil, errors.Join(errors.New("no block specified"), client.ErrInvalidOptions)
 	}
 
+	blockOpts := map[string]any{
+		"block_id": opts.Block,
+	}
+
 	var res spec.Block
-	err := s.client.CallFor(&res, "starknet_getBlockWithReceipts", opts)
+	err := s.client.CallFor(&res, "starknet_getBlockWithReceipts", blockOpts)
 	if err != nil {
 		return nil, errors.Join(errors.New("starknet_getBlockWithReceipts failed"), err)
 	}

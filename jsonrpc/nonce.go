@@ -40,8 +40,12 @@ func (s *Service) Nonce(ctx context.Context,
 		return nil, errors.Join(errors.New("no block specified"), client.ErrInvalidOptions)
 	}
 
+	nonceOpts := map[string]any{
+		"block_id":         opts.Block,
+		"contract_address": opts.Contract,
+	}
 	var res types.Number
-	err := s.client.CallFor(&res, "starknet_getNonce", opts.Block, opts.Contract.String())
+	err := s.client.CallFor(&res, "starknet_getNonce", nonceOpts)
 	if err != nil {
 		return nil, errors.Join(err, client.ErrRPCCallFailed)
 	}

@@ -37,7 +37,7 @@ func TestEvents(t *testing.T) {
 
 	response, err := s.Events(ctx, &api.EventsOpts{
 		FromBlock: "1",
-		ToBlock:   "6",
+		ToBlock:   "latest",
 		Limit:     10,
 	})
 	require.NoError(t, err)

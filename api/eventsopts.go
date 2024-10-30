@@ -15,10 +15,7 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"strconv"
-	"strings"
 
 	"github.com/attestantio/go-starknet-client/types"
 )
@@ -28,12 +25,11 @@ type EventsOpts struct {
 	Common CommonOpts
 
 	// FromBlock is the earliest block from which the events are obtained.
-	// It can be a block number, block hash, or one of the special values "latest" or "pending".
-	FromBlock string
+	FromBlock types.BlockID
 
 	// ToBlock is the latest block from which the events are obtained.
 	// It can be a block number, block hash, or one of the special values "latest" or "pending".
-	ToBlock string
+	ToBlock types.BlockID
 
 	// Address is the contract address from which the events are obtained.
 	// If empty then events there is no address filter on returned events.
@@ -51,40 +47,9 @@ type EventsOpts struct {
 // MarshalJSON marshals to a JSON representation.
 func (o *EventsOpts) MarshalJSON() ([]byte, error) {
 	filter := map[string]any{
-		"to_block":   o.FromBlock,
+		"from_block": o.FromBlock,
+		"to_block":   o.ToBlock,
 		"chunk_size": o.Limit,
-	}
-	switch {
-	case o.FromBlock == "latest" || o.FromBlock == "pending":
-		filter["from_block"] = o.FromBlock
-	case strings.HasPrefix(o.FromBlock, "0x"):
-		filter["from_block"] = map[string]any{
-			"block_hash": o.FromBlock,
-		}
-	default:
-		fromBlock, err := strconv.ParseUint(o.FromBlock, 10, 64)
-		if err != nil {
-			return nil, errors.New("invalid from block")
-		}
-		filter["from_block"] = map[string]any{
-			"block_number": fromBlock,
-		}
-	}
-	switch {
-	case o.ToBlock == "latest" || o.ToBlock == "pending":
-		filter["to_block"] = o.ToBlock
-	case strings.HasPrefix(o.ToBlock, "0x"):
-		filter["to_block"] = map[string]any{
-			"block_hash": o.ToBlock,
-		}
-	default:
-		toBlock, err := strconv.ParseUint(o.ToBlock, 10, 64)
-		if err != nil {
-			return nil, errors.New("invalid to block")
-		}
-		filter["to_block"] = map[string]any{
-			"block_number": toBlock,
-		}
 	}
 	if o.Address != nil {
 		filter["address"] = o.Address.String()

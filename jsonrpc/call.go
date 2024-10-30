@@ -16,7 +16,6 @@ package jsonrpc
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	client "github.com/attestantio/go-starknet-client"
 	"github.com/attestantio/go-starknet-client/api"
@@ -42,12 +41,15 @@ func (s *Service) Call(ctx context.Context,
 	}
 
 	callOpts := make(map[string]any)
-	request := make(map[string]string)
+	request := make(map[string]any)
 	request["contract_address"] = opts.Contract.String()
 	request["entry_point_selector"] = opts.EntryPointSelector.String()
-	if len(opts.CallData) > 0 {
-		request["call_data"] = fmt.Sprintf("%#x", opts.CallData)
+
+	calldata := make([]string, 0, len(opts.Calldata))
+	for i := range opts.Calldata {
+		calldata = append(calldata, opts.Calldata[i].String())
 	}
+	request["calldata"] = calldata
 	callOpts["request"] = request
 	callOpts["block_id"] = opts.Block
 

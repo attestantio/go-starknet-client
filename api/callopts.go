@@ -21,7 +21,7 @@ type CallOpts struct {
 
 	// Block is the block for which the data is obtained.
 	// It can be a block number, block hash, or one of the special values "latest" or "pending".
-	Block string
+	Block types.BlockID
 
 	// Contact is the contract for which the data is obtained.
 	Contract types.Address
@@ -29,6 +29,6 @@ type CallOpts struct {
 	// EntryPointSelector defines the entry point for the call.
 	EntryPointSelector types.FieldElement
 
-	// CallData is the data passed to the call.
-	CallData types.FieldElement
+	// Calldata is the data passed to the call.
+	Calldata []types.FieldElement
 }
