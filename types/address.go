@@ -27,6 +27,13 @@ const AddressLength = 32
 // Address is a 20-byte starknet address.
 type Address [AddressLength]byte
 
+var zeroAddress = Address{}
+
+// IsZero returns true if the address is zero.
+func (a Address) IsZero() bool {
+	return bytes.Equal(a[:], zeroAddress[:])
+}
+
 // String returns the string representation of the address.
 func (a Address) String() string {
 	res := hex.EncodeToString(a[:])
