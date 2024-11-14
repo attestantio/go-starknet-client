@@ -25,10 +25,12 @@ import (
 const HashLength = 32
 
 // Hash is a 32-byte hash.
+//
+//nolint:recvcheck
 type Hash [HashLength]byte
 
 // String returns the string representation of the hash.
-func (h Hash) String() string {
+func (h *Hash) String() string {
 	res := hex.EncodeToString(h[:])
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
@@ -41,7 +43,7 @@ func (h Hash) String() string {
 }
 
 // Format formats the hash.
-func (h Hash) Format(state fmt.State, v rune) {
+func (h *Hash) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
@@ -59,14 +61,14 @@ func (h Hash) Format(state fmt.State, v rune) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (h *Hash) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
-		return errors.New("input missing")
+		return errors.New("hash missing")
 	}
 
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
-		return errors.New("invalid prefix")
+		return errors.New("invalid hash prefix")
 	}
 	if !bytes.HasSuffix(input, []byte{'"'}) {
-		return errors.New("invalid suffix")
+		return errors.New("invalid hash suffix")
 	}
 
 	// Ensure that there are an even number of characters.
@@ -77,7 +79,7 @@ func (h *Hash) UnmarshalJSON(input []byte) error {
 
 	val, err := hex.DecodeString(bytesStr)
 	if err != nil {
-		return errors.New("hash is invalid")
+		return errors.New("invalid hash")
 	}
 	copy(h[len(h)-len(val):], val)
 

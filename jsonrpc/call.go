@@ -40,7 +40,7 @@ func (s *Service) Call(ctx context.Context,
 		return nil, errors.Join(errors.New("no block specified"), client.ErrInvalidOptions)
 	}
 
-	callOpts := make(map[string]any)
+	rpcOpts := make(map[string]any)
 	request := make(map[string]any)
 	request["contract_address"] = opts.Contract.String()
 	request["entry_point_selector"] = opts.EntryPointSelector.String()
@@ -50,17 +50,17 @@ func (s *Service) Call(ctx context.Context,
 		calldata = append(calldata, opts.Calldata[i].String())
 	}
 	request["calldata"] = calldata
-	callOpts["request"] = request
-	callOpts["block_id"] = opts.Block
+	rpcOpts["request"] = request
+	rpcOpts["block_id"] = opts.Block
 
-	var callResults []types.FieldElement
-	err := s.client.CallFor(&callResults, "starknet_call", callOpts)
+	var data []types.FieldElement
+	err := s.client.CallFor(&data, "starknet_call", rpcOpts)
 	if err != nil {
 		return nil, errors.Join(errors.New("starknet_call failed"), err)
 	}
 
 	return &api.Response[[]types.FieldElement]{
-		Data:     callResults,
+		Data:     data,
 		Metadata: map[string]any{},
 	}, nil
 }

@@ -22,11 +22,13 @@ import (
 )
 
 // Number is a generic number.
+//
+//nolint:recvcheck
 type Number uint64
 
 // String returns the string representation of the number.
-func (n Number) String() string {
-	res := strconv.FormatUint(uint64(n), 16)
+func (n *Number) String() string {
+	res := strconv.FormatUint(uint64(*n), 16)
 
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
@@ -39,7 +41,7 @@ func (n Number) String() string {
 }
 
 // Format formats the number.
-func (n Number) Format(state fmt.State, v rune) {
+func (n *Number) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
@@ -57,14 +59,14 @@ func (n Number) Format(state fmt.State, v rune) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (n *Number) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
-		return errors.New("input missing")
+		return errors.New("number missing")
 	}
 
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
-		return errors.New("invalid prefix")
+		return errors.New("invalid number prefix")
 	}
 	if !bytes.HasSuffix(input, []byte{'"'}) {
-		return errors.New("invalid suffix")
+		return errors.New("invalid number suffix")
 	}
 
 	// Ensure that there are an even number of characters.
@@ -75,7 +77,7 @@ func (n *Number) UnmarshalJSON(input []byte) error {
 
 	val, err := strconv.ParseUint(bytesStr, 16, 64)
 	if err != nil {
-		return errors.New("number is invalid")
+		return errors.New("invalid number")
 	}
 
 	*n = Number(val)

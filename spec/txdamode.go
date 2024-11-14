@@ -19,6 +19,8 @@ import (
 )
 
 // TxDAMode defines the data availability mode of transaction data.
+//
+//nolint:recvcheck
 type TxDAMode uint32
 
 const (
@@ -37,8 +39,8 @@ var txDAModeStrings = [...]string{
 }
 
 // MarshalJSON implements json.Marshaler.
-func (d *TxDAMode) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", txDAModeStrings[*d])), nil
+func (d TxDAMode) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%q", txDAModeStrings[d])), nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.

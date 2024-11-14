@@ -22,15 +22,17 @@ import (
 )
 
 // Data is arbitrary-length binary data.
+//
+//nolint:recvcheck
 type Data []byte
 
 // String returns the string representation of the data.
-func (d Data) String() string {
-	if len(d) == 0 {
+func (d *Data) String() string {
+	if len(*d) == 0 {
 		return "0x"
 	}
 
-	res := hex.EncodeToString(d)
+	res := hex.EncodeToString(*d)
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
 	// ...unless that's all there was.
@@ -42,7 +44,7 @@ func (d Data) String() string {
 }
 
 // Format formats the data.
-func (d Data) Format(state fmt.State, v rune) {
+func (d *Data) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
@@ -60,14 +62,14 @@ func (d Data) Format(state fmt.State, v rune) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (d *Data) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
-		return errors.New("input missing")
+		return errors.New("data missing")
 	}
 
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
-		return errors.New("invalid prefix")
+		return errors.New("invalid data prefix")
 	}
 	if !bytes.HasSuffix(input, []byte{'"'}) {
-		return errors.New("invalid suffix")
+		return errors.New("invalid data suffix")
 	}
 
 	// Ensure that there are an even number of characters.
@@ -78,7 +80,7 @@ func (d *Data) UnmarshalJSON(input []byte) error {
 
 	res, err := hex.DecodeString(bytesStr)
 	if err != nil {
-		return errors.New("data is invalid")
+		return errors.New("invalid data")
 	}
 
 	*d = Data(res)

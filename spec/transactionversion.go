@@ -20,6 +20,8 @@ import (
 )
 
 // TransactionVersion defines the spec version of a transaction.
+//
+//nolint:recvcheck
 type TransactionVersion uint8
 
 const (
@@ -44,12 +46,12 @@ var transactionVersionStrings = [...]string{
 }
 
 // MarshalJSON implements json.Marshaler.
-func (v *TransactionVersion) MarshalJSON() ([]byte, error) {
-	if int(*v) >= len(transactionVersionStrings) {
+func (v TransactionVersion) MarshalJSON() ([]byte, error) {
+	if int(v) >= len(transactionVersionStrings) {
 		return nil, errors.New("invalid transaction version")
 	}
 
-	return []byte(fmt.Sprintf("%q", transactionVersionStrings[*v])), nil
+	return []byte(fmt.Sprintf("%q", transactionVersionStrings[v])), nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -76,7 +78,7 @@ func (v *TransactionVersion) UnmarshalJSON(input []byte) error {
 // String returns a string representation of the item.
 func (v TransactionVersion) String() string {
 	if int(v) >= len(transactionVersionStrings) {
-		return "UNKNOWN"
+		return transactionVersionStrings[0]
 	}
 
 	return transactionVersionStrings[v]

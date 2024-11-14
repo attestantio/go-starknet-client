@@ -1,4 +1,4 @@
-// Copyright © 2021 - 2023 Attestant Limited.
+// Copyright © 2024 Attestant Limited.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -25,17 +25,19 @@ import (
 const AddressLength = 32
 
 // Address is a 20-byte starknet address.
+//
+//nolint:recvcheck
 type Address [AddressLength]byte
 
 var zeroAddress = Address{}
 
 // IsZero returns true if the address is zero.
-func (a Address) IsZero() bool {
+func (a *Address) IsZero() bool {
 	return bytes.Equal(a[:], zeroAddress[:])
 }
 
 // String returns the string representation of the address.
-func (a Address) String() string {
+func (a *Address) String() string {
 	res := hex.EncodeToString(a[:])
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
@@ -48,7 +50,7 @@ func (a Address) String() string {
 }
 
 // Format formats the address.
-func (a Address) Format(state fmt.State, v rune) {
+func (a *Address) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
@@ -66,14 +68,14 @@ func (a Address) Format(state fmt.State, v rune) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (a *Address) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
-		return errors.New("input missing")
+		return errors.New("address missing")
 	}
 
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
-		return errors.New("invalid prefix")
+		return errors.New("invalid address prefix")
 	}
 	if !bytes.HasSuffix(input, []byte{'"'}) {
-		return errors.New("invalid suffix")
+		return errors.New("invalid address suffix")
 	}
 
 	// Ensure that there are an even number of characters.
@@ -84,7 +86,7 @@ func (a *Address) UnmarshalJSON(input []byte) error {
 
 	val, err := hex.DecodeString(bytesStr)
 	if err != nil {
-		return errors.New("address is invalid")
+		return errors.New("invalid address")
 	}
 	copy(a[len(a)-len(val):], val)
 

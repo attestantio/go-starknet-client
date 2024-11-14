@@ -36,13 +36,13 @@ func (s *Service) BlockNumber(ctx context.Context,
 		return nil, client.ErrNoOptions
 	}
 
-	res := uint32(0)
-	if err := s.client.CallFor(&res, "starknet_blockNumber"); err != nil {
+	data := uint32(0)
+	if err := s.client.CallFor(&data, "starknet_blockNumber"); err != nil {
 		return nil, errors.Join(err, client.ErrRPCCallFailed)
 	}
 
 	return &api.Response[uint32]{
-		Data:     res,
+		Data:     data,
 		Metadata: map[string]any{},
 	}, nil
 }

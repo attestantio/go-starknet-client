@@ -19,6 +19,8 @@ import (
 )
 
 // BlockDAMode defines the data availability mode of transaction data.
+//
+//nolint:recvcheck
 type BlockDAMode uint32
 
 const (
@@ -37,8 +39,8 @@ var blockDAModeStrings = [...]string{
 }
 
 // MarshalJSON implements json.Marshaler.
-func (d *BlockDAMode) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", blockDAModeStrings[*d])), nil
+func (d BlockDAMode) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%q", blockDAModeStrings[d])), nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.

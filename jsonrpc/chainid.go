@@ -37,13 +37,13 @@ func (s *Service) ChainID(ctx context.Context,
 		return nil, client.ErrNoOptions
 	}
 
-	var res types.Data
-	if err := s.client.CallFor(&res, "starknet_chainId"); err != nil {
+	var data types.Data
+	if err := s.client.CallFor(&data, "starknet_chainId"); err != nil {
 		return nil, errors.Join(err, client.ErrRPCCallFailed)
 	}
 
 	return &api.Response[types.Data]{
-		Data:     res,
+		Data:     data,
 		Metadata: map[string]any{},
 	}, nil
 }

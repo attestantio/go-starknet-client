@@ -35,13 +35,13 @@ func (s *Service) SpecVersion(ctx context.Context,
 		return nil, client.ErrNoOptions
 	}
 
-	res := ""
-	if err := s.client.CallFor(&res, "starknet_specVersion"); err != nil {
+	var data string
+	if err := s.client.CallFor(&data, "starknet_specVersion"); err != nil {
 		return nil, err
 	}
 
 	return &api.Response[string]{
-		Data:     res,
+		Data:     data,
 		Metadata: map[string]any{},
 	}, nil
 }

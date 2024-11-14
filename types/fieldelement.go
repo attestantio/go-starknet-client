@@ -25,10 +25,12 @@ import (
 const FieldElementLength = 32
 
 // FieldElement is a 32-byte (actually max 252-bit) starknet field element.
+//
+//nolint:recvcheck
 type FieldElement [FieldElementLength]byte
 
 // String returns the string representation of the field element.
-func (f FieldElement) String() string {
+func (f *FieldElement) String() string {
 	res := hex.EncodeToString(f[:])
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
@@ -41,7 +43,7 @@ func (f FieldElement) String() string {
 }
 
 // Format formats the field element.
-func (f FieldElement) Format(state fmt.State, v rune) {
+func (f *FieldElement) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
@@ -59,14 +61,14 @@ func (f FieldElement) Format(state fmt.State, v rune) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (f *FieldElement) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
-		return errors.New("input missing")
+		return errors.New("field element missing")
 	}
 
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
-		return errors.New("invalid prefix")
+		return errors.New("invalid field element prefix")
 	}
 	if !bytes.HasSuffix(input, []byte{'"'}) {
-		return errors.New("invalid suffix")
+		return errors.New("invalid field element suffix")
 	}
 
 	// Ensure that there are an even number of characters.
@@ -77,7 +79,7 @@ func (f *FieldElement) UnmarshalJSON(input []byte) error {
 
 	val, err := hex.DecodeString(bytesStr)
 	if err != nil {
-		return errors.New("field element is invalid")
+		return errors.New("invalid field element")
 	}
 	copy(f[len(f)-len(val):], val)
 

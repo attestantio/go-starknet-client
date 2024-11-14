@@ -33,13 +33,13 @@ func (s *Service) Syncing(_ context.Context,
 		return nil, client.ErrNoOptions
 	}
 
-	var syncState api.SyncState
-	if err := s.client.CallFor(&syncState, "starknet_syncing"); err != nil {
+	var data api.SyncState
+	if err := s.client.CallFor(&data, "starknet_syncing"); err != nil {
 		return nil, err
 	}
 
 	return &api.Response[*api.SyncState]{
-		Data:     &syncState,
+		Data:     &data,
 		Metadata: map[string]any{},
 	}, nil
 }

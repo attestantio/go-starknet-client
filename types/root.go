@@ -25,10 +25,12 @@ import (
 const RootLength = 32
 
 // Root is a 32-byte merkle root.
+//
+//nolint:recvcheck
 type Root [RootLength]byte
 
 // String returns the string representation of the root.
-func (r Root) String() string {
+func (r *Root) String() string {
 	res := hex.EncodeToString(r[:])
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
@@ -41,7 +43,7 @@ func (r Root) String() string {
 }
 
 // Format formats the root.
-func (r Root) Format(state fmt.State, v rune) {
+func (r *Root) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
@@ -59,14 +61,14 @@ func (r Root) Format(state fmt.State, v rune) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (r *Root) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
-		return errors.New("input missing")
+		return errors.New("root missing")
 	}
 
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
-		return errors.New("invalid prefix")
+		return errors.New("invalid root prefix")
 	}
 	if !bytes.HasSuffix(input, []byte{'"'}) {
-		return errors.New("invalid suffix")
+		return errors.New("invalid root suffix")
 	}
 
 	// Ensure that there are an even number of characters.
@@ -77,7 +79,7 @@ func (r *Root) UnmarshalJSON(input []byte) error {
 
 	val, err := hex.DecodeString(bytesStr)
 	if err != nil {
-		return errors.New("root is invalid")
+		return errors.New("invalid root")
 	}
 	copy(r[len(r)-len(val):], val)
 

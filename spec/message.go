@@ -24,7 +24,7 @@ import (
 type Message struct {
 	FromAddress types.Address `json:"from_address"`
 	ToAddress   types.Address `json:"to_address"`
-	Payload     types.Data    `json:"payload"`
+	Payload     []types.Data  `json:"payload"`
 }
 
 // String returns a string version of the structure.

@@ -44,13 +44,13 @@ func (s *Service) Events(ctx context.Context,
 		return nil, errors.Join(errors.New("limit must be specified"), client.ErrInvalidOptions)
 	}
 
-	var eventsRes eventsResJSON
-	if err := s.client.CallFor(&eventsRes, "starknet_getEvents", opts); err != nil {
+	var res eventsResJSON
+	if err := s.client.CallFor(&res, "starknet_getEvents", opts); err != nil {
 		return nil, err
 	}
 
 	return &api.Response[[]*spec.TransactionEvent]{
-		Data:     eventsRes.Events,
+		Data:     res.Events,
 		Metadata: map[string]any{},
 	}, nil
 }

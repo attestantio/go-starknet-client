@@ -19,6 +19,8 @@ import (
 )
 
 // FeeUnit defines the type of a transaction.
+//
+//nolint:recvcheck
 type FeeUnit uint32
 
 const (
@@ -31,14 +33,14 @@ const (
 )
 
 var feeUnitStrings = [...]string{
-	"unknown",
+	"UNKNOWN",
 	"WEI",
 	"FRI",
 }
 
 // MarshalJSON implements json.Marshaler.
-func (f *FeeUnit) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", feeUnitStrings[*f])), nil
+func (f FeeUnit) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%q", feeUnitStrings[f])), nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -59,7 +61,7 @@ func (f *FeeUnit) UnmarshalJSON(input []byte) error {
 // String returns a string representation of the struct.
 func (f FeeUnit) String() string {
 	if uint32(f) >= uint32(len(feeUnitStrings)) {
-		return "unknown"
+		return feeUnitStrings[0]
 	}
 
 	return feeUnitStrings[f]

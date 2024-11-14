@@ -20,6 +20,8 @@ import (
 )
 
 // TransactionType defines the type of a transaction.
+//
+//nolint:recvcheck
 type TransactionType uint8
 
 const (
@@ -47,12 +49,12 @@ var transactionTypeStrings = [...]string{
 }
 
 // MarshalJSON implements json.Marshaler.
-func (t *TransactionType) MarshalJSON() ([]byte, error) {
-	if int(*t) >= len(transactionVersionStrings) {
+func (t TransactionType) MarshalJSON() ([]byte, error) {
+	if int(t) >= len(transactionVersionStrings) {
 		return nil, errors.New("invalid transaction version")
 	}
 
-	return []byte(fmt.Sprintf("%q", transactionTypeStrings[*t])), nil
+	return []byte(fmt.Sprintf("%q", transactionTypeStrings[t])), nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -81,7 +83,7 @@ func (t *TransactionType) UnmarshalJSON(input []byte) error {
 // String returns a string representation of the item.
 func (t TransactionType) String() string {
 	if int(t) >= len(transactionTypeStrings) {
-		return "UNKNOWN"
+		return transactionTypeStrings[0]
 	}
 
 	return transactionTypeStrings[t]

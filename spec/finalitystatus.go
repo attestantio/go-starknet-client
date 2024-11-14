@@ -19,6 +19,8 @@ import (
 )
 
 // FinalityStatus defines the finality status of a transaction.
+//
+//nolint:recvcheck
 type FinalityStatus uint32
 
 const (
@@ -43,8 +45,8 @@ var finalityStatusStrings = [...]string{
 }
 
 // MarshalJSON implements json.Marshaler.
-func (f *FinalityStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", finalityStatusStrings[*f])), nil
+func (f FinalityStatus) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%q", finalityStatusStrings[f])), nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.

@@ -22,11 +22,13 @@ import (
 )
 
 // Amount is a generic amount.
+//
+//nolint:recvcheck
 type Amount uint64
 
 // String returns the string representation of the amount.
-func (a Amount) String() string {
-	res := strconv.FormatUint(uint64(a), 16)
+func (a *Amount) String() string {
+	res := strconv.FormatUint(uint64(*a), 16)
 
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
@@ -39,7 +41,7 @@ func (a Amount) String() string {
 }
 
 // Format formats the amount.
-func (a Amount) Format(state fmt.State, v rune) {
+func (a *Amount) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
@@ -48,23 +50,23 @@ func (a Amount) Format(state fmt.State, v rune) {
 		if state.Flag('#') {
 			format = "#" + format
 		}
-		fmt.Fprintf(state, "%"+format, a)
+		fmt.Fprintf(state, "%"+format, *a)
 	default:
-		fmt.Fprintf(state, "%"+format, a)
+		fmt.Fprintf(state, "%"+format, *a)
 	}
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (a *Amount) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
-		return errors.New("input missing")
+		return errors.New("amount missing")
 	}
 
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
-		return errors.New("invalid prefix")
+		return errors.New("invalid amount prefix")
 	}
 	if !bytes.HasSuffix(input, []byte{'"'}) {
-		return errors.New("invalid suffix")
+		return errors.New("invalid amount suffix")
 	}
 
 	// Ensure that there are an even number of characters.
@@ -75,7 +77,7 @@ func (a *Amount) UnmarshalJSON(input []byte) error {
 
 	val, err := strconv.ParseUint(bytesStr, 16, 64)
 	if err != nil {
-		return errors.New("amount is invalid")
+		return errors.New("invalid amount")
 	}
 
 	*a = Amount(val)

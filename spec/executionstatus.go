@@ -19,6 +19,8 @@ import (
 )
 
 // ExecutionStatus defines the execution status of a transaction.
+//
+//nolint:recvcheck
 type ExecutionStatus uint32
 
 const (
@@ -37,8 +39,8 @@ var executionStatusStrings = [...]string{
 }
 
 // MarshalJSON implements json.Marshaler.
-func (e *ExecutionStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", executionStatusStrings[*e])), nil
+func (e ExecutionStatus) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%q", executionStatusStrings[e])), nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
