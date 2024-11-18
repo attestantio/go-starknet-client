@@ -35,6 +35,7 @@ import (
 
 // Service is an Starknet client service.
 type Service struct {
+	log              zerolog.Logger
 	base             *url.URL
 	address          string
 	webSocketAddress string
@@ -47,9 +48,6 @@ type Service struct {
 	connectionSynced bool
 }
 
-// log is a service-wide logger.
-var log zerolog.Logger
-
 // New creates a new execution client service, connecting with a standard HTTP.
 func New(ctx context.Context, params ...Parameter) (*Service, error) {
 	parameters, err := parseAndCheckParameters(params...)
@@ -58,7 +56,7 @@ func New(ctx context.Context, params ...Parameter) (*Service, error) {
 	}
 
 	// Set logging.
-	log = zerologger.With().Str("service", "client").Str("impl", "jsonrpc").Logger()
+	log := zerologger.With().Str("service", "client").Str("impl", "jsonrpc").Logger()
 	if parameters.logLevel != log.GetLevel() {
 		log = log.Level(parameters.logLevel)
 	}
@@ -109,6 +107,7 @@ func New(ctx context.Context, params ...Parameter) (*Service, error) {
 	})
 
 	s := &Service{
+		log:              log,
 		base:             base,
 		client:           rpcClient,
 		address:          address.String(),

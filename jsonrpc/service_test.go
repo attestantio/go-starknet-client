@@ -42,6 +42,7 @@ func TestService(t *testing.T) {
 		{
 			name: "AddressNil",
 			parameters: []jsonrpc.Parameter{
+				jsonrpc.WithLogLevel(zerolog.Disabled),
 				jsonrpc.WithTimeout(5 * time.Second),
 			},
 			err: "no address specified",
@@ -49,6 +50,7 @@ func TestService(t *testing.T) {
 		{
 			name: "TimeoutZero",
 			parameters: []jsonrpc.Parameter{
+				jsonrpc.WithLogLevel(zerolog.Disabled),
 				jsonrpc.WithAddress(os.Getenv("JSONRPC_ADDRESS")),
 				jsonrpc.WithTimeout(0),
 			},
@@ -57,6 +59,7 @@ func TestService(t *testing.T) {
 		{
 			name: "AddressInvalid",
 			parameters: []jsonrpc.Parameter{
+				jsonrpc.WithLogLevel(zerolog.Disabled),
 				jsonrpc.WithAddress(string([]byte{0x01})),
 				jsonrpc.WithTimeout(5 * time.Second),
 			},

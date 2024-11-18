@@ -32,12 +32,12 @@ type Address [AddressLength]byte
 var zeroAddress = Address{}
 
 // IsZero returns true if the address is zero.
-func (a *Address) IsZero() bool {
+func (a Address) IsZero() bool {
 	return bytes.Equal(a[:], zeroAddress[:])
 }
 
 // String returns the string representation of the address.
-func (a *Address) String() string {
+func (a Address) String() string {
 	res := hex.EncodeToString(a[:])
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
@@ -50,7 +50,7 @@ func (a *Address) String() string {
 }
 
 // Format formats the address.
-func (a *Address) Format(state fmt.State, v rune) {
+func (a Address) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
