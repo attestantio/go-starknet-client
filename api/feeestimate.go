@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package spec
+package api
 
 import (
 	"encoding/json"
@@ -20,21 +20,19 @@ import (
 	"github.com/attestantio/go-starknet-client/types"
 )
 
-// InvokeV0Transaction is version 0 of the invoke transaction.
-type InvokeV0Transaction struct {
-	TransactionHash    *types.Hash          `json:"transaction_hash,omitempty"`
-	Type               TransactionType      `json:"type"`
-	MaxFee             types.Number         `json:"max_fee"`
-	Version            TransactionVersion   `json:"version"`
-	Signature          types.Signature      `json:"signature"`
-	ContractAddress    types.Address        `json:"contract_address"`
-	EntryPointSelector types.FieldElement   `json:"entry_point_selector"`
-	Calldata           []types.FieldElement `json:"calldata"`
+// FeeEstimate contains a fee estimate.
+type FeeEstimate struct {
+	GasConsumed     types.Number `json:"gas_consumed"`
+	GasPrice        types.Number `json:"gas_price"`
+	DataGasConsumed types.Number `json:"data_gas_consumed"`
+	DataGasPrice    types.Number `json:"data_gas_price"`
+	OverallFee      types.Number `json:"overall_fee"`
+	Unit            string       `json:"unit"`
 }
 
 // String returns a string version of the structure.
-func (t *InvokeV0Transaction) String() string {
-	data, err := json.Marshal(t)
+func (f *FeeEstimate) String() string {
+	data, err := json.Marshal(f)
 	if err != nil {
 		return fmt.Sprintf("ERR: %v", err)
 	}

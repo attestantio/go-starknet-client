@@ -29,20 +29,32 @@ const (
 	TransactionVersionUnknown TransactionVersion = iota
 	// TransactionVersion0 is a version 0 transaction.
 	TransactionVersion0
+	// TransactionVersion0Query is a query-only version 0 transaction.
+	TransactionVersion0Query
 	// TransactionVersion1 is a version 1 transaction.
 	TransactionVersion1
+	// TransactionVersion1Query is a query-only version 1 transaction.
+	TransactionVersion1Query
 	// TransactionVersion2 is a version 2 transaction.
 	TransactionVersion2
+	// TransactionVersion2Query is a query-only version 2 transaction.
+	TransactionVersion2Query
 	// TransactionVersion3 is a version 3 transaction.
 	TransactionVersion3
+	// TransactionVersion3Query is a query-only version 3 transaction.
+	TransactionVersion3Query
 )
 
 var transactionVersionStrings = [...]string{
 	"UNKNOWN",
 	"0x0",
+	"0x100000000000000000000000000000000",
 	"0x1",
+	"0x100000000000000000000000000000001",
 	"0x2",
+	"0x100000000000000000000000000000002",
 	"0x3",
+	"0x100000000000000000000000000000003",
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -60,14 +72,22 @@ func (v *TransactionVersion) UnmarshalJSON(input []byte) error {
 	switch strings.ToLower(strings.Trim(string(input), `"`)) {
 	case "unknown":
 		*v = TransactionVersionUnknown
-	case "0x0", "0x100000000000000000000000000000000":
+	case "0x0":
 		*v = TransactionVersion0
-	case "0x1", "0x100000000000000000000000000000001":
+	case "0x100000000000000000000000000000000":
+		*v = TransactionVersion0Query
+	case "0x1":
 		*v = TransactionVersion1
-	case "0x2", "0x100000000000000000000000000000002":
+	case "0x100000000000000000000000000000001":
+		*v = TransactionVersion1Query
+	case "0x2":
 		*v = TransactionVersion2
-	case "0x3", "0x100000000000000000000000000000003":
+	case "0x100000000000000000000000000000002":
+		*v = TransactionVersion2Query
+	case "0x3":
 		*v = TransactionVersion3
+	case "0x100000000000000000000000000000003":
+		*v = TransactionVersion3Query
 	default:
 		err = fmt.Errorf("unrecognised transaction version %s", string(input))
 	}

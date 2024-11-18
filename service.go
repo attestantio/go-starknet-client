@@ -63,9 +63,9 @@ type BlockProvider interface {
 	)
 }
 
-// CallProvider is the interface for making calls to the execution client.
+// CallProvider is the interface for making calls to the client.
 type CallProvider interface {
-	// Call makes a call to the execution client.
+	// Call makes a call to the client.
 	Call(ctx context.Context,
 		opts *api.CallOpts,
 	) (
@@ -78,6 +78,17 @@ type CallProvider interface {
 type ChainIDProvider interface {
 	// ChainID returns the chain ID.
 	ChainID(ctx context.Context, opts *api.ChainIDOpts) (*api.Response[types.Data], error)
+}
+
+// EstimateFeeProvider is the interface for estimating transaction fees.
+type EstimateFeeProvider interface {
+	// EstimateFee estimates the fee for a transaction.
+	EstimateFee(ctx context.Context,
+		opts *api.EstimateFeeOpts,
+	) (
+		*api.Response[[]api.FeeEstimate],
+		error,
+	)
 }
 
 // EventsProvider is the interface for providing events.
@@ -126,6 +137,17 @@ type SyncingProvider interface {
 		opts *api.SyncingOpts,
 	) (
 		*api.Response[*api.SyncState],
+		error,
+	)
+}
+
+// TransactionSubmitter is the interface for submitting transactions to the client.
+type TransactionSubmitter interface {
+	// SubmitTransaction submits a transaction to the client.
+	SubmitTransaction(ctx context.Context,
+		opts *api.SubmitTransactionOpts,
+	) (
+		*api.Response[*api.SubmitTransactionResponse],
 		error,
 	)
 }

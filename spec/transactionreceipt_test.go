@@ -54,9 +54,9 @@ func TestTransactionReceipt(t *testing.T) {
 				rt, err := json.Marshal(&res)
 				require.NoError(t, err)
 				if len(test.expected) == 0 {
-					require.Equal(t, string(test.input), string(rt))
+					require.JSONEq(t, string(test.input), string(rt))
 				} else {
-					require.Equal(t, string(test.expected), string(rt))
+					require.JSONEq(t, string(test.expected), string(rt))
 				}
 			}
 		})

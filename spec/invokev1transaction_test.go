@@ -21,7 +21,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestFinalityStatus(t *testing.T) {
+func TestInvokeV1Transaction(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    []byte
@@ -35,31 +35,17 @@ func TestFinalityStatus(t *testing.T) {
 		{
 			name:  "JSONBad",
 			input: []byte("[]"),
-			err:   "unrecognised finality status []",
+			err:   "json: cannot unmarshal array into Go value of type spec.InvokeV1Transaction",
 		},
 		{
-			name:  "ACCEPTED_ON_L2",
-			input: []byte(`"ACCEPTED_ON_L2"`),
-		},
-		{
-			name:  "ACCEPTED_ON_L1",
-			input: []byte(`"ACCEPTED_ON_L1"`),
-		},
-		{
-			name:     "Accepted_on_l1",
-			input:    []byte(`"accepted_on_l1"`),
-			expected: []byte(`"ACCEPTED_ON_L1"`),
-		},
-		{
-			name:  "Unknown",
-			input: []byte(`"unknown"`),
-			err:   `unrecognised finality status "unknown"`,
+			name:  "Good",
+			input: []byte(`{"type":"INVOKE","sender_address":"0x391d69afc1b49f01ad8d2e0e8a03756b694dd056fb6645781eb00f33dbd8caf","calldata":["0x1","0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","0x83afd3f4caedc6eebf44246fe54e38c95e3179a5ec9ea81740eca5b482d12e","0x3","0x714792a41f3651e171c46c93fc53adeb922a414a891cc36d73029d23e99a6ec","0x2386f26fc10000","0x0"],"max_fee":"0x75e126529","version":"0x1","signature":["0x41cb23266d64d2ba4bbbb0a70355e249022153524fb2aeea3c41a2d0d9b785b","0x5f7bab89dcb1eef4e6a09a6da87494759c1816928012d05941c720fa7687920"],"nonce":"0x1"}`),
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			var res spec.FinalityStatus
+			var res spec.InvokeV1Transaction
 			err := json.Unmarshal(test.input, &res)
 			if test.err != "" {
 				require.EqualError(t, err, test.err)

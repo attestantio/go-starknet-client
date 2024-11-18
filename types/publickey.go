@@ -21,24 +21,24 @@ import (
 	"strings"
 )
 
-// HashLength is the length of a hash.
-const HashLength = 32
+// PublicKeyLength is the length of a startknet public key.
+const PublicKeyLength = 32
 
-// Hash is a 32-byte hash.
+// PublicKey is a starknet public key
 //
 //nolint:recvcheck
-type Hash [HashLength]byte
+type PublicKey [PublicKeyLength]byte
 
-var zeroHash = Hash{}
+var zeroPublicKey = PublicKey{}
 
-// IsZero returns true if the hash is zero.
-func (h Hash) IsZero() bool {
-	return bytes.Equal(h[:], zeroHash[:])
+// IsZero returns true if the public key is zero.
+func (a *PublicKey) IsZero() bool {
+	return bytes.Equal(a[:], zeroPublicKey[:])
 }
 
-// String returns the string representation of the hash.
-func (h Hash) String() string {
-	res := hex.EncodeToString(h[:])
+// String returns the string representation of the public key.
+func (a *PublicKey) String() string {
+	res := hex.EncodeToString(a[:])
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
 	// ...unless that's all there was.
@@ -49,33 +49,33 @@ func (h Hash) String() string {
 	return "0x" + res
 }
 
-// Format formats the hash.
-func (h Hash) Format(state fmt.State, v rune) {
+// Format formats the address.
+func (a *PublicKey) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
-		fmt.Fprint(state, h.String())
+		fmt.Fprint(state, a.String())
 	case 'x', 'X':
 		if state.Flag('#') {
 			format = "#" + format
 		}
-		fmt.Fprintf(state, "%"+format, h[:])
+		fmt.Fprintf(state, "%"+format, a[:])
 	default:
-		fmt.Fprintf(state, "%"+format, h[:])
+		fmt.Fprintf(state, "%"+format, a[:])
 	}
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (h *Hash) UnmarshalJSON(input []byte) error {
+func (a *PublicKey) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
-		return errors.New("hash missing")
+		return errors.New("address missing")
 	}
 
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
-		return errors.New("invalid hash prefix")
+		return errors.New("invalid address prefix")
 	}
 	if !bytes.HasSuffix(input, []byte{'"'}) {
-		return errors.New("invalid hash suffix")
+		return errors.New("invalid address suffix")
 	}
 
 	// Ensure that there are an even number of characters.
@@ -86,14 +86,14 @@ func (h *Hash) UnmarshalJSON(input []byte) error {
 
 	val, err := hex.DecodeString(bytesStr)
 	if err != nil {
-		return errors.New("invalid hash")
+		return errors.New("invalid address")
 	}
-	copy(h[len(h)-len(val):], val)
+	copy(a[len(a)-len(val):], val)
 
 	return nil
 }
 
 // MarshalJSON implements json.Marshaler.
-func (h Hash) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`"%s"`, h.String())), nil
+func (a PublicKey) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%q", a.String())), nil
 }
