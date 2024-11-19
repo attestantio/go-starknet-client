@@ -35,9 +35,12 @@ type EventsOpts struct {
 	// If empty then events there is no address filter on returned events.
 	Address *types.Address
 
-	// Keys
+	// Keys.
+	// Each list corresponds to matching keys for a given location.
+	// For example, [[a,b],[c,d] will return any event with either a or b in the first key field, and either c or d in the second
+	// key field.  [[],[c,d]] will return any event with either c or d in the second key field regardless of what is in the first.
 	// If empty then there is no key filter on returned events.
-	Keys []types.FieldElement
+	Keys [][]types.FieldElement
 
 	// Limit is the maximum number of events to return.
 	// This value must be provided.
@@ -55,9 +58,13 @@ func (o *EventsOpts) MarshalJSON() ([]byte, error) {
 		filter["address"] = o.Address.String()
 	}
 	if len(o.Keys) > 0 {
-		keys := make([]string, 0, len(o.Keys))
-		for _, key := range o.Keys {
-			keys = append(keys, key.String())
+		keys := make([][]string, 0, len(o.Keys))
+		for _, keySet := range o.Keys {
+			set := make([]string, 0, len(keySet))
+			for _, key := range keySet {
+				set = append(set, key.String())
+			}
+			keys = append(keys, set)
 		}
 		filter["keys"] = keys
 	}

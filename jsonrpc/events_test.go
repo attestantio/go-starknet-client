@@ -20,6 +20,7 @@ import (
 
 	"github.com/attestantio/go-starknet-client/api"
 	"github.com/attestantio/go-starknet-client/jsonrpc"
+	"github.com/attestantio/go-starknet-client/types"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/require"
 )
@@ -42,4 +43,20 @@ func TestEvents(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotNil(t, response.Data)
+
+	response2, err := s.Events(ctx, &api.EventsOpts{
+		FromBlock: "300000",
+		ToBlock:   "330000",
+		Keys: [][]types.FieldElement{
+			{
+				strToFieldElement("0xc4a5eb3afec3e38cbe8f43f66c46bb0ca74ae6f10bfbd7c7f0f461d5cdb9f4"),
+			},
+			{
+				strToFieldElement("0x6478e774beb00cd6b0714b0ad3ed3f80949b7e52b84f8f5792099d8990b7e26"),
+			},
+		},
+		Limit: 10,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, response2.Data)
 }
