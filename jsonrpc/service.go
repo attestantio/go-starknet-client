@@ -98,7 +98,7 @@ func New(ctx context.Context, params ...Parameter) (*Service, error) {
 	log.Trace().Stringer("address", address).Str("web_socket_address", webSocketAddress).Msg("Addresses configured")
 
 	extraHeaders := map[string]string{
-		"User-Agent": "go-starknet-client/0.1.0",
+		"User-Agent": "go-starknet-client/0.1.7",
 	}
 
 	rpcClient := jsonrpc.NewClientWithOpts(address.String(), &jsonrpc.RPCClientOpts{
