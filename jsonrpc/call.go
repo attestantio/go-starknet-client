@@ -15,11 +15,14 @@ package jsonrpc
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 
 	client "github.com/attestantio/go-starknet-client"
 	"github.com/attestantio/go-starknet-client/api"
 	"github.com/attestantio/go-starknet-client/types"
+	"github.com/ybbus/jsonrpc/v2"
 )
 
 // Call makes a call to the client.
@@ -56,11 +59,28 @@ func (s *Service) Call(ctx context.Context,
 	var data []types.FieldElement
 	err := s.client.CallFor(&data, "starknet_call", rpcOpts)
 	if err != nil {
-		return nil, errors.Join(errors.New("starknet_call failed"), err)
+		return nil, parseJSONRPCError(err)
 	}
 
 	return &api.Response[[]types.FieldElement]{
 		Data:     data,
 		Metadata: map[string]any{},
 	}, nil
+}
+
+// parseJSONRPCError potentially adds more information to a JSONRPC error.
+func parseJSONRPCError(err error) error {
+	var jsonrpcErr *jsonrpc.RPCError
+	if errors.As(err, &jsonrpcErr) {
+		if jsonrpcErr.Data != nil {
+			// Include the additional data in the error.
+			additional, marshalErr := json.Marshal(jsonrpcErr.Data)
+			if marshalErr != nil {
+				return errors.Join(err, client.ErrUnsupportedFormat)
+			}
+			err = fmt.Errorf("%s %s", err.Error(), string(additional))
+		}
+	}
+
+	return err
 }

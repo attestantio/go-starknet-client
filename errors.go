@@ -28,4 +28,6 @@ var (
 	ErrInconsistentResult = errors.New("inconsistent result")
 	// ErrRPCCallFailed is returned when an RPC call fails.
 	ErrRPCCallFailed = errors.New("RPC call failed")
+	// ErrUnsupportedFormat is returned when data is returned in an unsupported format.
+	ErrUnsupportedFormat = errors.New("unsupported data format")
 )

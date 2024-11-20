@@ -87,6 +87,18 @@ func TestCall(t *testing.T) {
 				strToFieldElement("0x9c4"),
 			},
 		},
+		{
+			name: "Revert",
+			opts: &api.CallOpts{
+				Block:              "327585",
+				Contract:           strToAddress("0x288b53071caf5a66460cef5673da0e0057e81f2f22c27a69ef1e0222f7a86ba"),
+				EntryPointSelector: strToFieldElement("0xcf37a862e5bf34bd0e858865ea02d4ba6db9cc722f3424eb452c94d4ea567f"),
+				Calldata: []types.FieldElement{
+					strToFieldElement("0x6743648963f634c530c426fe7938007719ccc68169717ad286a9e1ad8753955"),
+				},
+			},
+			err: `40:Contract error {"revert_error":"Execution failed. Failure reason: \"Pool member does not exist\"."}`,
+		},
 	}
 
 	s, err := jsonrpc.New(ctx,
