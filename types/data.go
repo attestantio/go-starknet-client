@@ -92,3 +92,21 @@ func (d *Data) UnmarshalJSON(input []byte) error {
 func (d Data) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("%q", d.String())), nil
 }
+
+// Parse converts a string to data.
+func (d *Data) Parse(input string) (*Data, error) {
+	if err := d.UnmarshalJSON([]byte(fmt.Sprintf("%q", input))); err != nil {
+		return d, err
+	}
+
+	return d, nil
+}
+
+// MustParse converts a string to data, panicking on error.
+func (d *Data) MustParse(input string) *Data {
+	if _, err := d.Parse(input); err != nil {
+		panic(err)
+	}
+
+	return d
+}

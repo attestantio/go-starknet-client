@@ -32,13 +32,13 @@ type PublicKey [PublicKeyLength]byte
 var zeroPublicKey = PublicKey{}
 
 // IsZero returns true if the public key is zero.
-func (a *PublicKey) IsZero() bool {
-	return bytes.Equal(a[:], zeroPublicKey[:])
+func (p *PublicKey) IsZero() bool {
+	return bytes.Equal(p[:], zeroPublicKey[:])
 }
 
 // String returns the string representation of the public key.
-func (a *PublicKey) String() string {
-	res := hex.EncodeToString(a[:])
+func (p *PublicKey) String() string {
+	res := hex.EncodeToString(p[:])
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
 	// ...unless that's all there was.
@@ -50,23 +50,23 @@ func (a *PublicKey) String() string {
 }
 
 // Format formats the address.
-func (a *PublicKey) Format(state fmt.State, v rune) {
+func (p *PublicKey) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
-		fmt.Fprint(state, a.String())
+		fmt.Fprint(state, p.String())
 	case 'x', 'X':
 		if state.Flag('#') {
 			format = "#" + format
 		}
-		fmt.Fprintf(state, "%"+format, a[:])
+		fmt.Fprintf(state, "%"+format, p[:])
 	default:
-		fmt.Fprintf(state, "%"+format, a[:])
+		fmt.Fprintf(state, "%"+format, p[:])
 	}
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (a *PublicKey) UnmarshalJSON(input []byte) error {
+func (p *PublicKey) UnmarshalJSON(input []byte) error {
 	if len(input) == 0 {
 		return errors.New("address missing")
 	}
@@ -88,12 +88,30 @@ func (a *PublicKey) UnmarshalJSON(input []byte) error {
 	if err != nil {
 		return errors.New("invalid address")
 	}
-	copy(a[len(a)-len(val):], val)
+	copy(p[len(p)-len(val):], val)
 
 	return nil
 }
 
 // MarshalJSON implements json.Marshaler.
-func (a PublicKey) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", a.String())), nil
+func (p PublicKey) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%q", p.String())), nil
+}
+
+// Parse converts a string to a public key.
+func (p *PublicKey) Parse(input string) (*PublicKey, error) {
+	if err := p.UnmarshalJSON([]byte(fmt.Sprintf("%q", input))); err != nil {
+		return p, err
+	}
+
+	return p, nil
+}
+
+// MustParse converts a string to a public key, panicking on error.
+func (p *PublicKey) MustParse(input string) *PublicKey {
+	if _, err := p.Parse(input); err != nil {
+		panic(err)
+	}
+
+	return p
 }

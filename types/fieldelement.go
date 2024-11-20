@@ -90,3 +90,21 @@ func (f *FieldElement) UnmarshalJSON(input []byte) error {
 func (f FieldElement) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`"%s"`, f.String())), nil
 }
+
+// Parse converts a string to a field element.
+func (f *FieldElement) Parse(input string) (*FieldElement, error) {
+	if err := f.UnmarshalJSON([]byte(fmt.Sprintf("%q", input))); err != nil {
+		return f, err
+	}
+
+	return f, nil
+}
+
+// MustParse converts a string to a field element, panicking on error.
+func (f *FieldElement) MustParse(input string) *FieldElement {
+	if _, err := f.Parse(input); err != nil {
+		panic(err)
+	}
+
+	return f
+}

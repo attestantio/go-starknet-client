@@ -97,3 +97,21 @@ func (h *Hash) UnmarshalJSON(input []byte) error {
 func (h Hash) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`"%s"`, h.String())), nil
 }
+
+// Parse converts a string to a hash.
+func (h *Hash) Parse(input string) (*Hash, error) {
+	if err := h.UnmarshalJSON([]byte(fmt.Sprintf("%q", input))); err != nil {
+		return h, err
+	}
+
+	return h, nil
+}
+
+// MustParse converts a string to a hash, panicking on error.
+func (h *Hash) MustParse(input string) *Hash {
+	if _, err := h.Parse(input); err != nil {
+		panic(err)
+	}
+
+	return h
+}

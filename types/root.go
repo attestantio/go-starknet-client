@@ -90,3 +90,21 @@ func (r *Root) UnmarshalJSON(input []byte) error {
 func (r Root) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`"%s"`, r.String())), nil
 }
+
+// Parse converts a string to a root.
+func (r *Root) Parse(input string) (*Root, error) {
+	if err := r.UnmarshalJSON([]byte(fmt.Sprintf("%q", input))); err != nil {
+		return r, err
+	}
+
+	return r, nil
+}
+
+// MustParse converts a string to a root, panicking on error.
+func (r *Root) MustParse(input string) *Root {
+	if _, err := r.Parse(input); err != nil {
+		panic(err)
+	}
+
+	return r
+}

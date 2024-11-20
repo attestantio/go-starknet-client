@@ -89,3 +89,21 @@ func (a *Amount) UnmarshalJSON(input []byte) error {
 func (a Amount) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("%q", a.String())), nil
 }
+
+// Parse converts a string to an amount.
+func (a *Amount) Parse(input string) (*Amount, error) {
+	if err := a.UnmarshalJSON([]byte(fmt.Sprintf("%q", input))); err != nil {
+		return a, err
+	}
+
+	return a, nil
+}
+
+// MustParse converts a string to an amount , panicking on error.
+func (a *Amount) MustParse(input string) *Amount {
+	if _, err := a.Parse(input); err != nil {
+		panic(err)
+	}
+
+	return a
+}

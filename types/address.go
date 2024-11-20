@@ -97,3 +97,21 @@ func (a *Address) UnmarshalJSON(input []byte) error {
 func (a Address) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("%q", a.String())), nil
 }
+
+// Parse converts a string to an address.
+func (a *Address) Parse(input string) (*Address, error) {
+	if err := a.UnmarshalJSON([]byte(fmt.Sprintf("%q", input))); err != nil {
+		return a, err
+	}
+
+	return a, nil
+}
+
+// MustParse converts a string to an address , panicking on error.
+func (a *Address) MustParse(input string) *Address {
+	if _, err := a.Parse(input); err != nil {
+		panic(err)
+	}
+
+	return a
+}
