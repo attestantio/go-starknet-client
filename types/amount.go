@@ -15,21 +15,30 @@ package types
 
 import (
 	"bytes"
+	"encoding/hex"
 	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 )
+
+// AmountLength is the length of a startknet amount.
+const AmountLength = 32
 
 // Amount is a generic amount.
 //
 //nolint:recvcheck
-type Amount uint64
+type Amount [AmountLength]byte
+
+var zeroAmount = Amount{}
+
+// IsZero returns true if the amount is zero.
+func (a Amount) IsZero() bool {
+	return bytes.Equal(a[:], zeroAmount[:])
+}
 
 // String returns the string representation of the amount.
-func (a *Amount) String() string {
-	res := strconv.FormatUint(uint64(*a), 16)
-
+func (a Amount) String() string {
+	res := hex.EncodeToString(a[:])
 	// Leading 0s not allowed...
 	res = strings.TrimLeft(res, "0")
 	// ...unless that's all there was.
@@ -41,7 +50,7 @@ func (a *Amount) String() string {
 }
 
 // Format formats the amount.
-func (a *Amount) Format(state fmt.State, v rune) {
+func (a Amount) Format(state fmt.State, v rune) {
 	format := string(v)
 	switch v {
 	case 's':
@@ -50,9 +59,9 @@ func (a *Amount) Format(state fmt.State, v rune) {
 		if state.Flag('#') {
 			format = "#" + format
 		}
-		fmt.Fprintf(state, "%"+format, *a)
+		fmt.Fprintf(state, "%"+format, a[:])
 	default:
-		fmt.Fprintf(state, "%"+format, *a)
+		fmt.Fprintf(state, "%"+format, a[:])
 	}
 }
 
@@ -75,12 +84,11 @@ func (a *Amount) UnmarshalJSON(input []byte) error {
 		bytesStr = "0" + bytesStr
 	}
 
-	val, err := strconv.ParseUint(bytesStr, 16, 64)
+	val, err := hex.DecodeString(bytesStr)
 	if err != nil {
 		return errors.New("invalid amount")
 	}
-
-	*a = Amount(val)
+	copy(a[len(a)-len(val):], val)
 
 	return nil
 }
