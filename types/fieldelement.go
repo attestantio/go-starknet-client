@@ -25,8 +25,6 @@ import (
 const FieldElementLength = 32
 
 // FieldElement is a 32-byte (actually max 252-bit) starknet field element.
-//
-//nolint:recvcheck
 type FieldElement [FieldElementLength]byte
 
 // String returns the string representation of the field element.

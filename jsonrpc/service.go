@@ -98,10 +98,10 @@ func New(ctx context.Context, params ...Parameter) (*Service, error) {
 	log.Trace().Stringer("address", address).Str("web_socket_address", webSocketAddress).Msg("Addresses configured")
 
 	extraHeaders := map[string]string{
-		"User-Agent": "go-starknet-client/0.1.8",
+		"User-Agent": "go-starknet-client/0.1.9",
 	}
 
-	rpcClient := jsonrpc.NewClientWithOpts(address.String(), &jsonrpc.RPCClientOpts{
+	rpcClient := jsonrpc.NewClientWithOpts(base.String(), &jsonrpc.RPCClientOpts{
 		HTTPClient:    httpClient,
 		CustomHeaders: extraHeaders,
 	})
@@ -306,6 +306,7 @@ func (s *Service) assertIsSynced(ctx context.Context) error {
 	return nil
 }
 
+//nolint:revive
 func parseAddress(address string) (*url.URL, *url.URL, error) {
 	if !strings.HasPrefix(address, "http") {
 		address = fmt.Sprintf("http://%s", address)

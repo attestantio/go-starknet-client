@@ -25,8 +25,6 @@ import (
 const RootLength = 32
 
 // Root is a 32-byte merkle root.
-//
-//nolint:recvcheck
 type Root [RootLength]byte
 
 // String returns the string representation of the root.

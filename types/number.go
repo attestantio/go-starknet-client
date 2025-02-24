@@ -22,8 +22,6 @@ import (
 )
 
 // Number is a generic number.
-//
-//nolint:recvcheck
 type Number uint64
 
 // String returns the string representation of the number.

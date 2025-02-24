@@ -22,8 +22,6 @@ import (
 )
 
 // Data is arbitrary-length binary data.
-//
-//nolint:recvcheck
 type Data []byte
 
 // String returns the string representation of the data.

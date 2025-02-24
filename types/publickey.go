@@ -24,9 +24,7 @@ import (
 // PublicKeyLength is the length of a startknet public key.
 const PublicKeyLength = 32
 
-// PublicKey is a starknet public key
-//
-//nolint:recvcheck
+// PublicKey is a starknet public key.
 type PublicKey [PublicKeyLength]byte
 
 var zeroPublicKey = PublicKey{}

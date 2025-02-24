@@ -198,7 +198,6 @@ linters:
     - err113
     - exhaustive
     - exhaustruct
-    - exportloopref
     - forcetypeassert
     - funlen
     - gci
@@ -212,6 +211,7 @@ linters:
     - musttag
     - perfsprint
     - tagliatelle
+    - tenv
     - varnamelen
     - wrapcheck
     - wsl
