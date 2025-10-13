@@ -52,6 +52,7 @@ func (f FinalityStatus) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (f *FinalityStatus) UnmarshalJSON(input []byte) error {
 	var err error
+
 	switch strings.ToUpper(string(input)) {
 	case `"PENDING"`:
 		*f = FinalityStatusPending

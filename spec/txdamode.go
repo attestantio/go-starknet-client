@@ -46,6 +46,7 @@ func (d TxDAMode) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (d *TxDAMode) UnmarshalJSON(input []byte) error {
 	var err error
+
 	switch strings.ToUpper(string(input)) {
 	case `"L1"`:
 		*d = TxDAModeL1

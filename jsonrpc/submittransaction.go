@@ -36,6 +36,7 @@ func (s *Service) SubmitTransaction(ctx context.Context,
 	if opts == nil {
 		return nil, client.ErrNoOptions
 	}
+
 	if opts.Transaction == nil {
 		return nil, errors.Join(errors.New("no transaction specified"), client.ErrInvalidOptions)
 	}
@@ -59,6 +60,7 @@ func (s *Service) invokeV1Transaction(_ context.Context,
 	error,
 ) {
 	var data api.SubmitTransactionResponse
+
 	err := s.client.CallFor(&data, "starknet_addInvokeTransaction", []*spec.Transaction{opts.Transaction})
 	if err != nil {
 		return nil, errors.Join(errors.New("starknet_call failed"), err)
@@ -77,6 +79,7 @@ func (s *Service) invokeV3Transaction(_ context.Context,
 	error,
 ) {
 	var data api.SubmitTransactionResponse
+
 	err := s.client.CallFor(&data, "starknet_addInvokeTransaction", []*spec.Transaction{opts.Transaction})
 	if err != nil {
 		return nil, errors.Join(errors.New("starknet_call failed"), err)

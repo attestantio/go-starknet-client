@@ -36,6 +36,7 @@ func (s *Service) Nonce(ctx context.Context,
 	if opts == nil {
 		return nil, client.ErrNoOptions
 	}
+
 	if opts.Block == "" {
 		return nil, errors.Join(errors.New("no block specified"), client.ErrInvalidOptions)
 	}
@@ -46,6 +47,7 @@ func (s *Service) Nonce(ctx context.Context,
 	}
 
 	var data types.Number
+
 	err := s.client.CallFor(&data, "starknet_getNonce", rpcOpts)
 	if err != nil {
 		return nil, errors.Join(err, client.ErrRPCCallFailed)

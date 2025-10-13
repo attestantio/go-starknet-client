@@ -58,9 +58,11 @@ func preFlightInvokeV3Transaction(_ context.Context,
 	if cpTx.InvokeV3Transaction.Signature == nil {
 		cpTx.InvokeV3Transaction.Signature = types.Signature{}
 	}
+
 	if cpTx.InvokeV3Transaction.PaymasterData == nil {
 		cpTx.InvokeV3Transaction.PaymasterData = []types.FieldElement{}
 	}
+
 	if cpTx.InvokeV3Transaction.AccountDeploymentData == nil {
 		cpTx.InvokeV3Transaction.AccountDeploymentData = []types.FieldElement{}
 	}

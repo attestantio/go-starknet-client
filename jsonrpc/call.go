@@ -39,6 +39,7 @@ func (s *Service) Call(ctx context.Context,
 	if opts == nil {
 		return nil, client.ErrNoOptions
 	}
+
 	if opts.Block == "" {
 		return nil, errors.Join(errors.New("no block specified"), client.ErrInvalidOptions)
 	}
@@ -52,11 +53,13 @@ func (s *Service) Call(ctx context.Context,
 	for i := range opts.Calldata {
 		calldata = append(calldata, opts.Calldata[i].String())
 	}
+
 	request["calldata"] = calldata
 	rpcOpts["request"] = request
 	rpcOpts["block_id"] = opts.Block
 
 	var data []types.FieldElement
+
 	err := s.client.CallFor(&data, "starknet_call", rpcOpts)
 	if err != nil {
 		return nil, parseJSONRPCError(err)
@@ -78,6 +81,7 @@ func parseJSONRPCError(err error) error {
 			if marshalErr != nil {
 				return errors.Join(err, client.ErrUnsupportedFormat)
 			}
+
 			err = fmt.Errorf("%s %s", err.Error(), string(additional))
 		}
 	}

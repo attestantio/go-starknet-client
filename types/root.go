@@ -50,6 +50,7 @@ func (r *Root) Format(state fmt.State, v rune) {
 		if state.Flag('#') {
 			format = "#" + format
 		}
+
 		fmt.Fprintf(state, "%"+format, r[:])
 	default:
 		fmt.Fprintf(state, "%"+format, r[:])
@@ -65,6 +66,7 @@ func (r *Root) UnmarshalJSON(input []byte) error {
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
 		return errors.New("invalid root prefix")
 	}
+
 	if !bytes.HasSuffix(input, []byte{'"'}) {
 		return errors.New("invalid root suffix")
 	}
@@ -79,6 +81,7 @@ func (r *Root) UnmarshalJSON(input []byte) error {
 	if err != nil {
 		return errors.New("invalid root")
 	}
+
 	copy(r[len(r)-len(val):], val)
 
 	return nil

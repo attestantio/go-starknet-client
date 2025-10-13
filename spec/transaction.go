@@ -72,10 +72,9 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-//
-//nolint:gocritic
 func (t *Transaction) UnmarshalJSON(input []byte) error {
 	var data transactionTypeAndVersionJSON
+
 	err := json.Unmarshal(input, &data)
 	if err != nil {
 		return errors.Join(errors.New("invalid JSON"), err)
@@ -87,6 +86,8 @@ func (t *Transaction) UnmarshalJSON(input []byte) error {
 		case TransactionVersion0:
 			t.DeployV0Transaction = &DeployV0Transaction{}
 			err = json.Unmarshal(input, t.DeployV0Transaction)
+		default:
+			return fmt.Errorf("unsupported deploy transaction version: %s", data.Version)
 		}
 	case TransactionTypeInvoke:
 		switch data.Version {
@@ -99,6 +100,8 @@ func (t *Transaction) UnmarshalJSON(input []byte) error {
 		case TransactionVersion3:
 			t.InvokeV3Transaction = &InvokeV3Transaction{}
 			err = json.Unmarshal(input, t.InvokeV3Transaction)
+		default:
+			return fmt.Errorf("unsupported invoke transaction version: %s", data.Version)
 		}
 	case TransactionTypeDeclare:
 		switch data.Version {
@@ -114,6 +117,8 @@ func (t *Transaction) UnmarshalJSON(input []byte) error {
 		case TransactionVersion3:
 			t.DeclareV3Transaction = &DeclareV3Transaction{}
 			err = json.Unmarshal(input, t.DeclareV3Transaction)
+		default:
+			return fmt.Errorf("unsupported declare transaction version: %s", data.Version)
 		}
 	case TransactionTypeDeployAccount:
 		switch data.Version {
@@ -123,12 +128,16 @@ func (t *Transaction) UnmarshalJSON(input []byte) error {
 		case TransactionVersion3:
 			t.DeployAccountV3Transaction = &DeployAccountV3Transaction{}
 			err = json.Unmarshal(input, t.DeployAccountV3Transaction)
+		default:
+			return fmt.Errorf("unsupported deploy account transaction version: %s", data.Version)
 		}
 	case TransactionTypeL1Handler:
 		switch data.Version {
 		case TransactionVersion0:
 			t.L1HandlerV0Transaction = &L1HandlerV0Transaction{}
 			err = json.Unmarshal(input, t.L1HandlerV0Transaction)
+		default:
+			return fmt.Errorf("unsupported L1 handler transaction version: %s", data.Version)
 		}
 	default:
 		err = fmt.Errorf("unhandled transaction %v %v", data.Type, data.Version)
@@ -162,6 +171,8 @@ func (t *Transaction) SetQueryBit() {
 		t.DeployAccountV3Transaction.Version = TransactionVersion3Query
 	case t.L1HandlerV0Transaction != nil:
 		t.L1HandlerV0Transaction.Version = TransactionVersion1Query
+	default:
+		// No transaction type matched - this shouldn't happen with valid data
 	}
 }
 

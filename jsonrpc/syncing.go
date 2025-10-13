@@ -28,7 +28,6 @@ func (s *Service) Syncing(_ context.Context,
 	error,
 ) {
 	// We do not run assertIsActive here as it calls this function, and so it would cause a loop.
-
 	if opts == nil {
 		return nil, client.ErrNoOptions
 	}

@@ -48,6 +48,7 @@ func (n *Number) Format(state fmt.State, v rune) {
 		if state.Flag('#') {
 			format = "#" + format
 		}
+
 		fmt.Fprintf(state, "%"+format, n)
 	default:
 		fmt.Fprintf(state, "%"+format, n)
@@ -63,6 +64,7 @@ func (n *Number) UnmarshalJSON(input []byte) error {
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
 		return errors.New("invalid number prefix")
 	}
+
 	if !bytes.HasSuffix(input, []byte{'"'}) {
 		return errors.New("invalid number suffix")
 	}

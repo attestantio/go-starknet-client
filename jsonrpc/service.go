@@ -89,12 +89,15 @@ func New(ctx context.Context, params ...Parameter) (*Service, error) {
 	if strings.HasPrefix(webSocketAddress, "http://") {
 		webSocketAddress = fmt.Sprintf("ws://%s", webSocketAddress[7:])
 	}
+
 	if strings.HasPrefix(webSocketAddress, "https://") {
 		webSocketAddress = fmt.Sprintf("wss://%s", webSocketAddress[8:])
 	}
+
 	if !strings.HasPrefix(webSocketAddress, "ws") {
 		webSocketAddress = fmt.Sprintf("ws://%s", webSocketAddress)
 	}
+
 	log.Trace().Stringer("address", address).Str("web_socket_address", webSocketAddress).Msg("Addresses configured")
 
 	extraHeaders := map[string]string{
@@ -144,23 +147,6 @@ func New(ctx context.Context, params ...Parameter) (*Service, error) {
 	return s, nil
 }
 
-// periodicUpdateConnectionState periodically pings the client to update its active and synced status.
-func (s *Service) periodicUpdateConnectionState(ctx context.Context) {
-	go func(s *Service, ctx context.Context) {
-		// Refresh every 30 seconds.
-		refreshTicker := time.NewTicker(30 * time.Second)
-		defer refreshTicker.Stop()
-		for {
-			select {
-			case <-refreshTicker.C:
-				s.CheckConnectionState(ctx)
-			case <-ctx.Done():
-				return
-			}
-		}
-	}(s, ctx)
-}
-
 // CheckConnectionState checks the connection state for the client, potentially updating
 // its activation and sync states.
 // This will call hooks supplied when creating the client if the state changes.
@@ -172,8 +158,10 @@ func (s *Service) CheckConnectionState(ctx context.Context) {
 	wasSynced := s.connectionSynced
 	s.connectionMu.Unlock()
 
-	var active bool
-	var synced bool
+	var (
+		active bool
+		synced bool
+	)
 
 	acquired := s.pingSem.TryAcquire(1)
 	if !acquired {
@@ -184,12 +172,14 @@ func (s *Service) CheckConnectionState(ctx context.Context) {
 		response, err := s.Syncing(ctx, &api.SyncingOpts{})
 		if err != nil {
 			log.Debug().Err(err).Msg("Failed to obtain sync state from node")
+
 			active = false
 			synced = false
 		} else {
 			active = true
 			synced = !response.Data.Syncing
 		}
+
 		s.pingSem.Release(1)
 	}
 
@@ -233,12 +223,6 @@ func (s *Service) CheckConnectionState(ctx context.Context) {
 	}
 }
 
-// fetchStaticValues fetches values that never change.
-// This caches the values, avoiding future API calls.
-func (*Service) fetchStaticValues(_ context.Context) error {
-	return nil
-}
-
 // Name provides the name of the service.
 func (*Service) Name() string {
 	return "json-rpc"
@@ -247,10 +231,6 @@ func (*Service) Name() string {
 // Address provides the address for the connection.
 func (s *Service) Address() string {
 	return s.address
-}
-
-// close closes the service, freeing up resources.
-func (*Service) close() {
 }
 
 // IsActive returns true if the client is active.
@@ -271,6 +251,34 @@ func (s *Service) IsSynced() bool {
 	return synced
 }
 
+// periodicUpdateConnectionState periodically pings the client to update its active and synced status.
+func (s *Service) periodicUpdateConnectionState(ctx context.Context) {
+	go func(s *Service, ctx context.Context) {
+		// Refresh every 30 seconds.
+		refreshTicker := time.NewTicker(30 * time.Second)
+		defer refreshTicker.Stop()
+
+		for {
+			select {
+			case <-refreshTicker.C:
+				s.CheckConnectionState(ctx)
+			case <-ctx.Done():
+				return
+			}
+		}
+	}(s, ctx)
+}
+
+// fetchStaticValues fetches values that never change.
+// This caches the values, avoiding future API calls.
+func (*Service) fetchStaticValues(_ context.Context) error {
+	return nil
+}
+
+// close closes the service, freeing up resources.
+func (*Service) close() {
+}
+
 func (s *Service) assertIsActive(ctx context.Context) error {
 	active := s.IsActive()
 	if active {
@@ -278,6 +286,7 @@ func (s *Service) assertIsActive(ctx context.Context) error {
 	}
 
 	s.CheckConnectionState(ctx)
+
 	active = s.IsActive()
 	if !active {
 		return client.ErrNotActive
@@ -293,6 +302,7 @@ func (s *Service) assertIsSynced(ctx context.Context) error {
 	}
 
 	s.CheckConnectionState(ctx)
+
 	active := s.IsActive()
 	if !active {
 		return client.ErrNotActive
@@ -311,6 +321,7 @@ func parseAddress(address string) (*url.URL, *url.URL, error) {
 	if !strings.HasPrefix(address, "http") {
 		address = fmt.Sprintf("http://%s", address)
 	}
+
 	base, err := url.Parse(address)
 	if err != nil {
 		return nil, nil, errors.Join(errors.New("invalid URL"), err)
@@ -325,10 +336,12 @@ func parseAddress(address string) (*url.URL, *url.URL, error) {
 		user := baseAddress.User.Username()
 		baseAddress.User = url.UserPassword(user, "xxxxx")
 	}
+
 	if baseAddress.Path != "" {
 		// Mask the path.
 		baseAddress.Path = "xxxxx"
 	}
+
 	if baseAddress.RawQuery != "" {
 		// Mask all query values.
 		sensitiveRegex := regexp.MustCompile("=([^&]*)(&)?")

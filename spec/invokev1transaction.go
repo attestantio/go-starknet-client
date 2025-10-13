@@ -44,11 +44,14 @@ func (t InvokeV1Transaction) Copy() *InvokeV1Transaction {
 		tx.TransactionHash = &types.Hash{}
 		copy(tx.TransactionHash[:], t.TransactionHash[:])
 	}
+
 	copy(tx.SenderAddress[:], t.SenderAddress[:])
+
 	tx.Calldata = make([]types.FieldElement, len(t.Calldata))
 	for i := range t.Calldata {
 		copy(tx.Calldata[i][:], t.Calldata[i][:])
 	}
+
 	tx.Signature = make([]types.FieldElement, len(t.Signature))
 	for i := range t.Signature {
 		copy(tx.Signature[i][:], t.Signature[i][:])
