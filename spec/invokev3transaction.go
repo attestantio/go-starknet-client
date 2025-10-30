@@ -61,19 +61,24 @@ func (t InvokeV3Transaction) Copy() *InvokeV3Transaction {
 		tx.TransactionHash = &types.Hash{}
 		copy(tx.TransactionHash[:], t.TransactionHash[:])
 	}
+
 	copy(tx.SenderAddress[:], t.SenderAddress[:])
+
 	tx.Calldata = make([]types.FieldElement, len(t.Calldata))
 	for i := range t.Calldata {
 		copy(tx.Calldata[i][:], t.Calldata[i][:])
 	}
+
 	tx.Signature = make([]types.FieldElement, len(t.Signature))
 	for i := range t.Signature {
 		copy(tx.Signature[i][:], t.Signature[i][:])
 	}
+
 	tx.PaymasterData = make([]types.FieldElement, len(t.PaymasterData))
 	for i := range t.PaymasterData {
 		copy(tx.PaymasterData[i][:], t.PaymasterData[i][:])
 	}
+
 	tx.AccountDeploymentData = make([]types.FieldElement, len(t.AccountDeploymentData))
 	for i := range t.AccountDeploymentData {
 		copy(tx.AccountDeploymentData[i][:], t.AccountDeploymentData[i][:])

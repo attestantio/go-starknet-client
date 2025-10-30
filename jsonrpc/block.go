@@ -36,6 +36,7 @@ func (s *Service) Block(ctx context.Context,
 	if opts == nil {
 		return nil, client.ErrNoOptions
 	}
+
 	if opts.Block == "" {
 		return nil, errors.Join(errors.New("no block specified"), client.ErrInvalidOptions)
 	}
@@ -45,6 +46,7 @@ func (s *Service) Block(ctx context.Context,
 	}
 
 	var data spec.Block
+
 	err := s.client.CallFor(&data, "starknet_getBlockWithReceipts", rpcOpts)
 	if err != nil {
 		return nil, errors.Join(errors.New("starknet_getBlockWithReceipts failed"), err)

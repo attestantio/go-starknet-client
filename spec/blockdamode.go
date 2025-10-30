@@ -46,6 +46,7 @@ func (d BlockDAMode) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (d *BlockDAMode) UnmarshalJSON(input []byte) error {
 	var err error
+
 	switch strings.ToUpper(string(input)) {
 	case `"BLOB"`:
 		*d = BlockDAModeL1

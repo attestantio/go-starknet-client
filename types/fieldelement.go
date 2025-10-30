@@ -50,6 +50,7 @@ func (f *FieldElement) Format(state fmt.State, v rune) {
 		if state.Flag('#') {
 			format = "#" + format
 		}
+
 		fmt.Fprintf(state, "%"+format, f[:])
 	default:
 		fmt.Fprintf(state, "%"+format, f[:])
@@ -65,6 +66,7 @@ func (f *FieldElement) UnmarshalJSON(input []byte) error {
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
 		return errors.New("invalid field element prefix")
 	}
+
 	if !bytes.HasSuffix(input, []byte{'"'}) {
 		return errors.New("invalid field element suffix")
 	}
@@ -79,6 +81,7 @@ func (f *FieldElement) UnmarshalJSON(input []byte) error {
 	if err != nil {
 		return errors.New("invalid field element")
 	}
+
 	copy(f[len(f)-len(val):], val)
 
 	return nil

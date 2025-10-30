@@ -40,6 +40,7 @@ func (s *Service) Events(ctx context.Context,
 	if opts == nil {
 		return nil, client.ErrNoOptions
 	}
+
 	if opts.Limit <= 0 {
 		return nil, errors.Join(errors.New("limit must be specified"), client.ErrInvalidOptions)
 	}

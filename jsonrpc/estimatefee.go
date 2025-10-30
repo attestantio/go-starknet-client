@@ -35,6 +35,7 @@ func (s *Service) EstimateFee(ctx context.Context,
 	if opts == nil {
 		return nil, client.ErrNoOptions
 	}
+
 	if opts.Transaction == nil {
 		return nil, errors.Join(errors.New("no transaction specified"), client.ErrInvalidOptions)
 	}
@@ -43,6 +44,7 @@ func (s *Service) EstimateFee(ctx context.Context,
 	tx.SetQueryBit()
 
 	var data []api.FeeEstimate
+
 	err := s.client.CallFor(&data, "starknet_estimateFee", []any{tx}, []any{"SKIP_VALIDATE"}, opts.Block)
 	if err != nil {
 		return nil, errors.Join(errors.New("starknet_estimateFee failed"), err)

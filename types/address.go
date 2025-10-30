@@ -59,6 +59,7 @@ func (a Address) Format(state fmt.State, v rune) {
 		if state.Flag('#') {
 			format = "#" + format
 		}
+
 		fmt.Fprintf(state, "%"+format, a[:])
 	default:
 		fmt.Fprintf(state, "%"+format, a[:])
@@ -74,6 +75,7 @@ func (a *Address) UnmarshalJSON(input []byte) error {
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
 		return errors.New("invalid address prefix")
 	}
+
 	if !bytes.HasSuffix(input, []byte{'"'}) {
 		return errors.New("invalid address suffix")
 	}
@@ -88,6 +90,7 @@ func (a *Address) UnmarshalJSON(input []byte) error {
 	if err != nil {
 		return errors.New("invalid address")
 	}
+
 	copy(a[len(a)-len(val):], val)
 
 	return nil

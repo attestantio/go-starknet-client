@@ -59,6 +59,7 @@ func (a Amount) Format(state fmt.State, v rune) {
 		if state.Flag('#') {
 			format = "#" + format
 		}
+
 		fmt.Fprintf(state, "%"+format, a[:])
 	default:
 		fmt.Fprintf(state, "%"+format, a[:])
@@ -74,6 +75,7 @@ func (a *Amount) UnmarshalJSON(input []byte) error {
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
 		return errors.New("invalid amount prefix")
 	}
+
 	if !bytes.HasSuffix(input, []byte{'"'}) {
 		return errors.New("invalid amount suffix")
 	}
@@ -88,6 +90,7 @@ func (a *Amount) UnmarshalJSON(input []byte) error {
 	if err != nil {
 		return errors.New("invalid amount")
 	}
+
 	copy(a[len(a)-len(val):], val)
 
 	return nil

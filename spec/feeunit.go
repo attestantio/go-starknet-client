@@ -46,6 +46,7 @@ func (f FeeUnit) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (f *FeeUnit) UnmarshalJSON(input []byte) error {
 	var err error
+
 	switch strings.ToUpper(string(input)) {
 	case `"WEI"`:
 		*f = FeeUnitWei

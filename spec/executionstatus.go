@@ -46,6 +46,7 @@ func (e ExecutionStatus) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (e *ExecutionStatus) UnmarshalJSON(input []byte) error {
 	var err error
+
 	switch strings.ToUpper(string(input)) {
 	case `"SUCCEEDED"`:
 		*e = ExecutionStatusSucceeded

@@ -69,6 +69,7 @@ func (v TransactionVersion) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (v *TransactionVersion) UnmarshalJSON(input []byte) error {
 	var err error
+
 	switch strings.ToLower(strings.Trim(string(input), `"`)) {
 	case "unknown":
 		*v = TransactionVersionUnknown

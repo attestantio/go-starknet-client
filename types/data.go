@@ -51,6 +51,7 @@ func (d *Data) Format(state fmt.State, v rune) {
 		if state.Flag('#') {
 			format = "#" + format
 		}
+
 		fmt.Fprintf(state, "%"+format, d)
 	default:
 		fmt.Fprintf(state, "%"+format, d)
@@ -66,6 +67,7 @@ func (d *Data) UnmarshalJSON(input []byte) error {
 	if !bytes.HasPrefix(input, []byte{'"', '0', 'x'}) {
 		return errors.New("invalid data prefix")
 	}
+
 	if !bytes.HasSuffix(input, []byte{'"'}) {
 		return errors.New("invalid data suffix")
 	}

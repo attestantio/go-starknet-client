@@ -57,6 +57,7 @@ func (o *EventsOpts) MarshalJSON() ([]byte, error) {
 	if o.Address != nil {
 		filter["address"] = o.Address.String()
 	}
+
 	if len(o.Keys) > 0 {
 		keys := make([][]string, 0, len(o.Keys))
 		for _, keySet := range o.Keys {
@@ -64,8 +65,10 @@ func (o *EventsOpts) MarshalJSON() ([]byte, error) {
 			for _, key := range keySet {
 				set = append(set, key.String())
 			}
+
 			keys = append(keys, set)
 		}
+
 		filter["keys"] = keys
 	}
 
