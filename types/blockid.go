@@ -42,9 +42,9 @@ func (b BlockID) Format(state fmt.State, v rune) {
 			format = "#" + format
 		}
 
-		fmt.Fprintf(state, "%"+format, b[:])
+		fmt.Fprintf(state, "%"+format, []byte(b))
 	default:
-		fmt.Fprintf(state, "%"+format, b[:])
+		fmt.Fprintf(state, "%"+format, string(b))
 	}
 }
 
